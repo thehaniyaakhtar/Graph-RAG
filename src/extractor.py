@@ -19,3 +19,17 @@ class CyberEntity(BaseModel):
         ...,
         description = "The normalized cannonical name of the entity"
     )
+    entity_type: EntityType = Field(
+        ...,
+        description = "The strict ontological category of the entity"
+    )
+    aliases: List[str] = Field(
+        default_factory = list,
+        description="Alternative names or aliass identified in the text"
+    )
+    
+    @model_validator(mode = 'after')
+    def normalize_name(self) -> 'CyberEntity':
+        """ENsures consistent formatting for graph node keys by stripping whitespaces"""
+        self.name = self.name.strip()
+        return self
